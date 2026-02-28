@@ -3,6 +3,8 @@ node_modules/
 dist/
 build/
 
+client/stats.html
+
 .env
 .env.local
 .env.*.local

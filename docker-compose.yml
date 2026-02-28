@@ -4,7 +4,8 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - uploads:/app/uploads
+      - ./backend:/app
+      - /app/node_modules
     environment:
       - MINIO_ENDPOINT=${MINIO_ENDPOINT}
       - MINIO_USER=${MINIO_ROOT_USER}
