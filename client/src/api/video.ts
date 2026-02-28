@@ -33,7 +33,7 @@ export const getVideoUrl = (filename: string): string => {
 }
 
 
-export const getVideoList = async (): Promise<string[]> => {
-  const response = await fetch(`${BASE_URL}/video`)
+export const getVideoList = async (signal: AbortSignal): Promise<string[]> => {
+  const response = await fetch(`${BASE_URL}/video`, { signal: signal })
   return response.json() as Promise<string[]>
 }

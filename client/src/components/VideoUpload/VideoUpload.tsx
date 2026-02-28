@@ -1,7 +1,6 @@
 import { useState } from "react"
-import { uploadVideo } from "../api/video"
-import { Box, Button, LinearProgress, Typography } from "@mui/material"
-
+import { uploadVideo } from "../../api/video.ts"
+import './VideoUpload.css'
 
 interface VideoUploadProps {
   onUpload: (filename: string) => void
@@ -16,14 +15,12 @@ export const VideoUpload = ({ onUpload }: VideoUploadProps) => {
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
 
-
     if (!file) {
       return
     }
 
     setLoading(true)
     setError(null)
-
 
     try {
       const { filename } = await uploadVideo(file, setProgress)
@@ -35,11 +32,12 @@ export const VideoUpload = ({ onUpload }: VideoUploadProps) => {
       setLoading(false)
     }
   }
+
   return (
-    <Box display="flex" flexDirection="column" gap={2} >
-      <Button variant="contained" component="label" htmlFor="video-input">
+    <div className="upload-container">
+      <label htmlFor="video-input" className="upload-btn">
         Выбрать видео
-      </Button>
+      </label>
       <input
         id="video-input"
         type="file"
@@ -48,12 +46,12 @@ export const VideoUpload = ({ onUpload }: VideoUploadProps) => {
         onChange={handleChange}
       />
       {loading && (
-        <Box>
-          <LinearProgress variant="determinate" value={progress} />
-          <Typography variant="caption">{progress}%</Typography>
-        </Box>
+        <div>
+          <progress value={progress} max={100} className="progress-bar" />
+          <span className="progress-label">{progress}%</span>
+        </div>
       )}
-      {error && <Typography color="error">{error}</Typography>}
-    </Box >
-  )
+      {error && <p className="error-text">{error}</p>}
+    </div>
+  );
 }

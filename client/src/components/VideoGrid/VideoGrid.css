@@ -1,4 +1,5 @@
 .video-grid {
+  margin: 0 auto;
   columns: 1;
   column-gap: 16px;
 }
@@ -15,7 +16,7 @@
 
 @media (min-width: 900px) {
   .video-grid {
-    columns: 5;
+    columns: 4;
   }
 }
 

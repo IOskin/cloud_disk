@@ -1,9 +1,8 @@
-import { Box, Container, Typography } from "@mui/material"
 import { useState } from "react"
-import { VideoUpload } from "../components/VideoUpload"
-import { VideoPlayer } from "../components/VideoPlayer"
-import { VideoGrid } from "../components/VideoGrid"
-
+import { VideoUpload } from "../components/VideoUpload/VideoUpload.tsx"
+import { VideoPlayer } from "../components/VideoPlayer/VideoPlayer.tsx"
+import { VideoGrid } from "../components/VideoGrid/VideoGrid.tsx"
+import './HomePage.css'
 
 export const HomePage = () => {
   const [filename, setFilename] = useState<string | null>(null)
@@ -15,13 +14,13 @@ export const HomePage = () => {
   }
 
   return (
-    <Container maxWidth="md">
-      <Box display="flex" flexDirection="column" gap={4} py={4}>
-        <Typography variant="h4">Стриминг видео</Typography>
+    <>
+      <div className="app-container">
+        <h1 className="app-title">Стриминг видео</h1>
         <VideoUpload onUpload={handleUpload} />
         {filename && <VideoPlayer filename={filename} />}
         <VideoGrid onSelect={setFilename} refresh={refresh} />
-      </Box>
-    </Container>
-  )
+      </div>
+    </>
+  );
 }

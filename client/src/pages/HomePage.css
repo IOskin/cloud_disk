@@ -1,0 +1,12 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px 0;
+}
+
+.app-title {
+  margin: 0;
+  font-size: 2.125rem;
+  font-weight: 400;
+}
