@@ -8,6 +8,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { s3, BUCKET } from './s3.client';
 import { Upload } from '@aws-sdk/lib-storage';
 import { Readable } from 'stream';
+import { compressVideo } from './video.utils';
 
 @Injectable()
 export class VideoService {
@@ -15,13 +16,13 @@ export class VideoService {
 
   async saveVideo(file: Express.Multer.File): Promise<{ filename: string }> {
     const filename = Date.now() + '.mp4';
-
+    const compressed = await compressVideo(file.buffer);
     const upload = new Upload({
       client: this.s3,
       params: {
         Bucket: BUCKET,
         Key: filename,
-        Body: file.buffer,
+        Body: compressed,
         ContentType: file.mimetype,
       },
     });
