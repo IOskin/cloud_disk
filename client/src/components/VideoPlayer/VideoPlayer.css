@@ -22,6 +22,34 @@
   user-select: none;
 }
 
+.vp-wrap:fullscreen,
+.vp-wrap:-webkit-full-screen {
+  max-width: none;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.vp-wrap:fullscreen .vp-video-area,
+.vp-wrap:-webkit-full-screen .vp-video-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.vp-wrap:fullscreen .vp-video-area video,
+.vp-wrap:-webkit-full-screen .vp-video-area video {
+  max-height: none;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .vp-corner-accent {
   position: absolute;
   top: 0;
