@@ -1,12 +1,10 @@
 import {
   Controller,
   Get,
-  Param,
   Post,
-  Headers,
-  Res,
   UseInterceptors,
   UploadedFile,
+  Param,
 } from '@nestjs/common';
 
 import { VideoService } from './video.service';
@@ -34,17 +32,8 @@ export class VideoController {
     return this.videoService.getVideoList();
   }
 
-  @Get(':filename')
-  async streamVideo(
-    @Param('filename') filename: string,
-    @Headers('range') range: string,
-    @Res() res: Response,
-  ) {
-    const { stream, headers, status } = await this.videoService.streamVideo(
-      filename,
-      range,
-    );
-    res.writeHead(status, headers);
-    stream.pipe(res);
+  @Get(':filename/url')
+  async getVideoUrl(@Param('filename') filename: string) {
+    return this.videoService.getPresignedUrl(filename);
   }
 }

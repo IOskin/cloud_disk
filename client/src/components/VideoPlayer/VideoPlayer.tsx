@@ -1,6 +1,6 @@
-import { useRef, useState, useCallback } from "react";
-import { getVideoUrl } from "../../api/video";
+import { useRef, useState, useCallback, useEffect } from "react";
 import "./VideoPlayer.css";
+import useFetch from "../../hooks/useFetch";
 
 interface VideoPlayerProps {
   filename: string;
@@ -20,6 +20,8 @@ export const VideoPlayer = ({ filename }: VideoPlayerProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [seeking, setSeeking] = useState(false);
   const hideTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { data: videoLink }
+    = useFetch<{ url: string }>(`/api/video/${filename}/url`)
 
   const formatTime = (sec: number) => {
     const h = Math.floor(sec / 3600);
@@ -121,14 +123,13 @@ export const VideoPlayer = ({ filename }: VideoPlayerProps) => {
         <div className="vp-scanlines" />
         <video
           ref={videoRef}
-          src={getVideoUrl(filename)}
+          src={videoLink?.url ?? undefined}
           onTimeUpdate={handleTimeUpdate}
           onLoadedMetadata={handleLoadedMetadata}
           onEnded={() => {
             setPlaying(false);
             setShowControls(true);
           }}
-          preload="none"
         />
         <div className="vp-play-overlay">
           <div className="vp-play-overlay-btn">{playing ? "⏸" : "▶"}</div>

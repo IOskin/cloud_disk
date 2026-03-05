@@ -4,10 +4,11 @@ import {
   ListObjectsV2Command,
   S3Client,
 } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { s3, BUCKET } from './s3.client';
 import { Upload } from '@aws-sdk/lib-storage';
-import { Readable } from 'stream';
+// import { Readable } from 'stream';
 import { compressVideo } from './video.utils';
 
 @Injectable()
@@ -41,55 +42,13 @@ export class VideoService {
     }
   }
 
-  async streamVideo(
-    fileName: string,
-    range: string,
-  ): Promise<{
-    stream: Readable;
-    headers: Record<string, string | number>;
-    status: 200 | 206;
-  }> {
-    const { fileSize } = await this.getFileInfo(fileName);
-
-    if (range) {
-      const [startStr, endStr] = range.replace('bytes=', '').split('-');
-      const start = parseInt(startStr, 10);
-      const end = endStr ? parseInt(endStr, 10) : fileSize - 1;
-
-      const command = new GetObjectCommand({
-        Bucket: BUCKET,
-        Key: fileName,
-        Range: `bytes=${start}-${end}`,
-      });
-
-      const { Body } = await this.s3.send(command);
-
-      return {
-        stream: Body as Readable,
-        headers: {
-          'Content-Range': `bytes ${start}-${end}/${fileSize}`,
-          'Accept-Ranges': 'bytes',
-          'Content-Length': end - start + 1,
-          'Content-Type': 'video/mp4',
-        },
-        status: 206,
-      };
-    }
-
-    const command = new GetObjectCommand({ Bucket: BUCKET, Key: fileName });
-    const { Body } = await this.s3.send(command);
-
-    return {
-      stream: Body as Readable,
-      headers: {
-        'Content-Length': fileSize,
-        'Accept-Ranges': 'bytes',
-        'Content-Type': 'video/mp4',
-      },
-      status: 200,
-    };
+  async getPresignedUrl(filename: string): Promise<{ url: string }> {
+    const command = new GetObjectCommand({ Bucket: BUCKET, Key: filename });
+    const url = await getSignedUrl(this.s3, command, {
+      expiresIn: 3600,
+    });
+    return { url };
   }
-
   async getVideoList(): Promise<string[]> {
     const command = new ListObjectsV2Command({ Bucket: BUCKET });
     const { Contents } = await this.s3.send(command);
